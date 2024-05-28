@@ -1,0 +1,53 @@
+{
+  "name": "src",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm-run-all -p dev:*",
+    "dev:app": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/server": "^11.10.0",
+    "@heroicons/react": "^2.0.17",
+    "@mantine/carousel": "^6.0.6",
+    "@mantine/core": "^6.0.6",
+    "@mantine/dates": "^6.0.6",
+    "@mantine/dropzone": "^6.0.6",
+    "@mantine/form": "^6.0.6",
+    "@mantine/hooks": "^6.0.6",
+    "@mantine/modals": "^6.0.6",
+    "@mantine/next": "^6.0.6",
+    "@mantine/notifications": "^6.0.6",
+    "@mantine/nprogress": "^6.0.6",
+    "@mantine/prism": "^6.0.6",
+    "@mantine/spotlight": "^6.0.6",
+    "@types/node": "18.15.11",
+    "@types/react": "18.0.33",
+    "@types/react-dom": "18.0.11",
+    "autoprefixer": "10.4.14",
+    "dayjs": "^1.11.7",
+    "embla-carousel-react": "^7.1.0",
+    "eslint": "8.38.0",
+    "eslint-config-next": "13.3.0",
+    "file-saver": "^2.0.5",
+    "next": "13.3.0",
+    "next-auth": "^4.22.1",
+    "postcss": "8.4.21",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwindcss": "3.3.1",
+    "typescript": "5.0.4"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
+    "@types/file-saver": "^2.0.5",
+    "chart.js": "^4.3.2",
+    "faker": "^6.6.6",
+    "npm-run-all": "^4.1.5",
+    "react-chartjs-2": "^5.2.0"
+  }
+}

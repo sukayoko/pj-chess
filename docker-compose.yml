@@ -1,0 +1,44 @@
+version: '3'
+services:
+  front-end-nextjs:
+    container_name: chess-nextjs-web
+    build:
+      context: ./front-end-nextjs
+    tty: true
+    volumes:
+      - ./front-end-nextjs/src:/workspace
+    ports:
+      - '3080:3000'
+      - '3081:3001'
+    command : ["sh", "-c", "npm cache clean --force && npm install && npm run dev"]
+    restart: unless-stopped
+  postgres:
+    container_name: chess-postgres
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=chessdb
+    # データの永続化
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    # ポートの指定（HOST:CONTAINER）
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+  back-end-go:
+    container_name: chess-go-api
+    build: 
+      context: ./back-end-go
+    ports:
+     - 38080:8080
+     - 38081:8081
+    tty:
+      true
+    volumes:
+      - ./back-end-go/src/api:/go/src/api
+    command : ["go", "run", "main.go"]
+    restart: unless-stopped
+# データの永続化
+volumes:
+  postgres:

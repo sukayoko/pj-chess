@@ -8,6 +8,10 @@ import (
 	"alforest.net/testdb"
 	"alforest.net/umapsql"
 	"github.com/gin-gonic/gin"
+
+	docs "alforest.net/docs"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -36,8 +40,18 @@ func main() {
 		// テスト用
 		// v1.POST("/testCreate", addTable)
 		v1.GET("/ping", ping)
+		v1.GET("/health", health)
 		v1.GET("/testdb", dbtest)
+
+		// 現状固定
+		url := ginSwagger.URL("http://192.168.56.18:38081/public/chess-api.json")
+		v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler, url))
 	}
+
+	// swaggerの設定
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	// 静的ファイルディレクトリの定義
+	router.Static("/public", "./public")
 
 	// 認証に成功した場合は、c.Next() を呼び出して次のハンドラに移動する
 	// 認証に失敗した場合は、エラーレスポンスを返すなどの処理を行う
@@ -67,6 +81,13 @@ func corsMiddleware() gin.HandlerFunc {
 
 func ping(c *gin.Context) {
 	c.String(200, "pong\n")
+}
+
+func health(c *gin.Context) {
+	resp := &umapsql.ChessApiResponse{
+		Status: "okok",
+	}
+	c.JSON(http.StatusOK, resp.ToJson())
 }
 
 func dbtest(c *gin.Context) {

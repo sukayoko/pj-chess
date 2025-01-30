@@ -8,6 +8,10 @@ import (
 	"alforest.net/testdb"
 	"alforest.net/umapsql"
 	"github.com/gin-gonic/gin"
+
+	docs "alforest.net/docs"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -16,6 +20,11 @@ func main() {
 
 	// CORSミドルウェアを設定する
 	router.Use(corsMiddleware())
+
+	// swaggerの設定
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	// 静的ファイルディレクトリの定義
+	router.Static("/public", "./public")
 
 	v1 := router.Group("/api/v1")
 	{
@@ -37,31 +46,49 @@ func main() {
 		// v1.POST("/testCreate", addTable)
 		v1.GET("/ping", ping)
 		v1.GET("/testdb", dbtest)
+
+		url := ginSwagger.URL("http://192.168.56.18:38080/swagger/chess-api-test.json")
+		v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler, url))
 	}
 
 	// 認証に成功した場合は、c.Next() を呼び出して次のハンドラに移動する
 	// 認証に失敗した場合は、エラーレスポンスを返すなどの処理を行う
 	// v1.Use(authMiddleware) // authMiddlewareをv1グループの全てのエンドポイントに適用
 
+
+	
 	// サーバを起動
-	// router.Run(":8080")
+	router.Run(":8080")
 	// HTTPS？
-	router.RunTLS(":8080", "server.pem", "server.key")
+	// router.RunTLS(":8080", "server.pem", "server.key")
 }
 
 // CORSミドルウェアの定義
 func corsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*") // すべてのオリジンからのリクエストを許可する場合
+		// c.Writer.Header().Set("Content-Type", "application/json")
+		// c.Writer.Header().Set("Access-Control-Allow-Origin", "*") // すべてのオリジンからのリクエストを許可する場合
+	 	// c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	 	// c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+
 		// c.Writer.Header().Set("Access-Control-Allow-Origin", "http://example.com") // 特定のオリジンからのリクエストを許可する場合
 		// 他の必要なCORSヘッダーも設定することができます
 
+		// if c.Request.Method == "OPTIONS" {
+		// 	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		// 	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		// 	c.AbortWithStatus(200)
+		// 	return
+		// }
 		if c.Request.Method == "OPTIONS" {
-			c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-			c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-			c.AbortWithStatus(200)
+			c.AbortWithStatus(204)
 			return
-		}
+		} 
 
 		c.Next()
 	}

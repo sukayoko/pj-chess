@@ -39,6 +39,19 @@ services:
       - ./back-end-go/src/api:/go/src/api
     command : ["go", "run", "main.go"]
     restart: unless-stopped
+  # API開発用 swagger
+  swagger:
+    container_name: chess-swagger
+    build: 
+      context: ./swagger
+    ports:
+     - 38090:8080
+    tty:
+      true
+    # volumes:
+    #   - ./swagger/usr/share/nginx:/usr/share/nginx
+    restart: unless-stopped
+
 # データの永続化
 volumes:
   postgres:

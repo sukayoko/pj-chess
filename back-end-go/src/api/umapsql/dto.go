@@ -22,6 +22,17 @@ func (resp ApiResponse) ToJson() gin.H {
 	return result
 }
 
+type ChessApiResponse struct {
+	Status string      `json:"status"`
+}
+
+func (resp ChessApiResponse) ToJson() gin.H {
+	result := gin.H{
+		"status": resp.Status,
+	}
+	return result
+}
+
 // next-auth の仕様にも合わせている
 type User struct {
 	ID        uint      `gorm:"primaryKey" json:"id"`
